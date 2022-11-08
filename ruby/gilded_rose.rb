@@ -28,7 +28,12 @@ class GildedRose
   end
 
   def expiry_rate(item)
-    ItemAdjuster.new(item).adjust_expiration
+    case item.name
+    when SULFURAS
+      SulfurasItemAdjuster.new(item).adjust_quality
+    else
+      ItemAdjuster.new(item).adjust_expiration
+    end
   end
 
   def quality_adjustment(item)
@@ -76,11 +81,7 @@ class ItemAdjuster
   end
 
   def adjust_expiration
-    if item.name == SULFURAS
-      return 0
-    else
-      return 1
-    end
+    1
   end
 end
 
@@ -96,6 +97,10 @@ end
 
 class SulfurasItemAdjuster < ItemAdjuster
   def adjust_quality
+    0
+  end
+
+  def adjust_expiration
     0
   end
 end
