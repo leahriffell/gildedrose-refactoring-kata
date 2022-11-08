@@ -72,13 +72,25 @@ class TestUntitled < Test::Unit::TestCase
     assert_equal items[0].quality, 4
   end
 
-  def test_backstage_passes_quality_increases_when_sellin_between_10_and_6
+  def test_backstage_passes_quality_increases_2x_when_sellin_at_10
+    items = [Item.new(BACKSTAGE_PASSES, 10, 3)]
+    GildedRose.new(items).update_quality()
+    assert_equal items[0].quality, 5
+  end
+
+  def test_backstage_passes_quality_increases_2x_when_sellin_at_6
+    items = [Item.new(BACKSTAGE_PASSES, 6, 3)]
+    GildedRose.new(items).update_quality()
+    assert_equal items[0].quality, 5
+  end
+
+  def test_backstage_passes_quality_2x_increases_when_sellin_between_10_and_6
     items = [Item.new(BACKSTAGE_PASSES, 7, 3)]
     GildedRose.new(items).update_quality()
     assert_equal items[0].quality, 5
   end
 
-  def test_backstage_passes_quality_increases_when_sellin_below_6
+  def test_backstage_passes_quality_increases_3x_when_sellin_below_6
     items = [Item.new(BACKSTAGE_PASSES, 5, 3)]
     GildedRose.new(items).update_quality()
     assert_equal items[0].quality, 6
@@ -96,4 +108,3 @@ class TestUntitled < Test::Unit::TestCase
     assert_equal items[0].quality, 50
   end
 end
-
