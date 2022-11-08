@@ -32,7 +32,12 @@ class GildedRose
   end
 
   def quality_adjustment(item)
-    ItemAdjuster.new(item).adjust_quality
+    case item.name
+    when AGED_BRIE
+      BrieItemAdjuster.new(item).adjust_quality
+    else
+      ItemAdjuster.new(item).adjust_quality
+    end
   end
 end
 
@@ -49,12 +54,6 @@ class ItemAdjuster
 
   def adjust_quality
     case item.name
-    when AGED_BRIE
-      if item.sell_in < 1
-        2
-      else
-        1
-      end
     when SULFURAS
       0
     when BACKSTAGE_PASSES
@@ -81,6 +80,16 @@ class ItemAdjuster
       return 0
     else
       return 1
+    end
+  end
+end
+
+class BrieItemAdjuster < ItemAdjuster
+  def adjust_quality
+    if item.sell_in < 1
+      2
+    else
+      1
     end
   end
 end
