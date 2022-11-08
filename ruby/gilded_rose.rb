@@ -42,6 +42,8 @@ class GildedRose
       BrieItemAdjuster.new(item).adjust_quality
     when SULFURAS
       SulfurasItemAdjuster.new(item).adjust_quality
+    when BACKSTAGE_PASSES
+      BackstagePassesItemAdjuster.new(item).adjust_quality
     else
       ItemAdjuster.new(item).adjust_quality
     end
@@ -60,23 +62,10 @@ class ItemAdjuster
   end
 
   def adjust_quality
-    case item.name
-    when BACKSTAGE_PASSES
-      if item.sell_in >10
-        1
-      elsif item.sell_in > 5 && item.sell_in <= 10
-        2
-      elsif item.sell_in < 6 && item.sell_in > 0
-        3
-      elsif item.sell_in < 1
-        -1 * item.quality
-      end
+    if item.sell_in < 1
+      -2
     else
-      if item.sell_in < 1
-        -2
-      else
-        -1
-      end
+      -1
     end
   end
 
@@ -102,6 +91,20 @@ class SulfurasItemAdjuster < ItemAdjuster
 
   def adjust_expiration
     0
+  end
+end
+
+class BackstagePassesItemAdjuster < ItemAdjuster
+  def adjust_quality
+    if item.sell_in > 10
+      1
+    elsif item.sell_in > 5 && item.sell_in <= 10
+      2
+    elsif item.sell_in < 6 && item.sell_in > 0
+      3
+    elsif item.sell_in < 1
+      -1 * item.quality
+    end
   end
 end
 
