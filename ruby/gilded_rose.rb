@@ -11,8 +11,8 @@ class GildedRose
 
   def update_quality
     @items.each do |item|
-      item.quality += quality_adjustment(item)
-      item.sell_in -= expiry_rate(item)
+      item.quality += ItemAdjuster.for(item).adjust_quality
+      item.sell_in -= ItemAdjuster.for(item).adjust_expiration
       item.quality = quality_range(item.quality)
     end
   end
@@ -26,28 +26,6 @@ class GildedRose
       quality
     end
   end
-
-  def expiry_rate(item)
-    case item.name
-    when SULFURAS
-      SulfurasItemAdjuster.new(item).adjust_quality
-    else
-      ItemAdjuster.new(item).adjust_expiration
-    end
-  end
-
-  def quality_adjustment(item)
-    case item.name
-    when AGED_BRIE
-      BrieItemAdjuster.new(item).adjust_quality
-    when SULFURAS
-      SulfurasItemAdjuster.new(item).adjust_quality
-    when BACKSTAGE_PASSES
-      BackstagePassesItemAdjuster.new(item).adjust_quality
-    else
-      ItemAdjuster.new(item).adjust_quality
-    end
-  end
 end
 
 class ItemAdjuster
@@ -56,6 +34,21 @@ class ItemAdjuster
   AGED_BRIE = "Aged Brie"
   SULFURAS = "Sulfuras, Hand of Ragnaros"
   BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
+
+  class << self
+    def for(item)
+      case item.name
+      when AGED_BRIE
+        BrieItemAdjuster.new(item)
+      when SULFURAS
+        SulfurasItemAdjuster.new(item)
+      when BACKSTAGE_PASSES
+        BackstagePassesItemAdjuster.new(item)
+      else
+        ItemAdjuster.new(item)
+      end
+    end
+  end
 
   def initialize(item)
     @item = item
