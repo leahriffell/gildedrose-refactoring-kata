@@ -11,8 +11,7 @@ class GildedRose
 
   def update_quality
     @items.each do |item|
-      item_adjuster = ItemAdjuster.for(item)
-      item_adjuster.adjust
+      ItemAdjuster.for(item).adjust
     end
   end
 end
@@ -89,6 +88,10 @@ class SulfurasItemAdjuster < ItemAdjuster
 
   def adjust_expiration
     0
+  end
+
+  def quality_range(max: 50, min: 0)
+    80
   end
 end
 

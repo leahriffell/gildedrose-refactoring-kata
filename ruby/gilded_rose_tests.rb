@@ -61,9 +61,9 @@ class TestUntitled < Test::Unit::TestCase
   end
 
   def test_sulfuras_quality_stays_the_same
-    items = [Item.new(SULFURAS, 3, 3)]
+    items = [Item.new(SULFURAS, 3, 80)]
     GildedRose.new(items).update_quality()
-    assert_equal items[0].quality, 3
+    assert_equal items[0].quality, 80
   end
 
   def test_backstage_passes_quality_increases_when_sellin_above_10
