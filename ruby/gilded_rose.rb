@@ -1,17 +1,13 @@
 class GildedRose
   attr_accessor :items
 
-  AGED_BRIE = "Aged Brie"
-  SULFURAS = "Sulfuras, Hand of Ragnaros"
-  BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
-
   def initialize(items)
-    @items = items
+    @adjusters = items.map { |item| ItemAdjuster.for(item) }
   end
 
   def update_quality
-    @items.each do |item|
-      ItemAdjuster.for(item).adjust
+    @adjusters.each do |adjuster|
+      adjuster.adjust
     end
   end
 end
@@ -22,19 +18,22 @@ class ItemAdjuster
   AGED_BRIE = "Aged Brie"
   SULFURAS = "Sulfuras, Hand of Ragnaros"
   BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
+  CONJURED = "Conjured"
 
   class << self
     def for(item)
       case item.name
       when AGED_BRIE
-        BrieItemAdjuster.new(item)
+        BrieItemAdjuster
       when SULFURAS
-        SulfurasItemAdjuster.new(item)
+        SulfurasItemAdjuster
       when BACKSTAGE_PASSES
-        BackstagePassesItemAdjuster.new(item)
+        BackstagePassesItemAdjuster
+      when CONJURED
+        ConjuredItemAdjuster
       else
-        ItemAdjuster.new(item)
-      end
+        ItemAdjuster
+      end.new(item)
     end
   end
 
@@ -106,6 +105,12 @@ class BackstagePassesItemAdjuster < ItemAdjuster
     elsif item.sell_in < 1
       -1 * item.quality
     end
+  end
+end
+
+class ConjuredItemAdjuster < ItemAdjuster
+  def adjust_quality
+    super * 2
   end
 end
 

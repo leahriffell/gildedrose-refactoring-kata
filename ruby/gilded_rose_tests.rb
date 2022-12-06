@@ -5,6 +5,7 @@ class TestUntitled < Test::Unit::TestCase
   AGED_BRIE = "Aged Brie"
   SULFURAS = "Sulfuras, Hand of Ragnaros"
   BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert"
+  CONJURED = "Conjured"
 
   def test_generic_item_sellin_reduced
     items = [Item.new("generic item", 3, 3)]
@@ -106,5 +107,17 @@ class TestUntitled < Test::Unit::TestCase
     items = [Item.new(BACKSTAGE_PASSES, 3, 50)]
     GildedRose.new(items).update_quality()
     assert_equal items[0].quality, 50
+  end
+
+  def test_conjured_item_quality_reduced_twice_as_fast_as_normal
+    items = [Item.new(CONJURED, 3, 3)]
+    GildedRose.new(items).update_quality()
+    assert_equal items[0].quality, 1
+  end
+
+  def test_conjured_item_quality_reduced_twice_as_fast_as_normal_sell_in_date_reached
+    items = [Item.new(CONJURED, 0, 5)]
+    GildedRose.new(items).update_quality()
+    assert_equal items[0].quality, 1
   end
 end
